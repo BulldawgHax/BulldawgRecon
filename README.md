@@ -19,7 +19,8 @@ Current recon flow:
 Subdomain finding tool. 
 
 Outputs:
-- total-subdomains.txt - Unique list of discovered subdomains. 
+- amass-enum.txt - subdomains found by amass
+- total-subdomains.txt - Unique list of discovered subdomains from all tools. 
 
 Tools used:
 - Amass - github.com/OWASP/Amass
