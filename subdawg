@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#Uses domains.txt for top in-scope domains defined in the Bug Bounty Program.
+#Uses exclude.txt as the out-of-scope domains defined in the Bug Bounty Program.
+
+#Tools that will be run to add newly discovered subdomains to total-subdomains.txt
+#Amass
+echo "[+] Starting Amass"
+amass enum -passive -df domains.txt -timeout 30 -silent -o amass-enum.txt -blf exclude.txt | anew -q total-subdomains.txt
+
+#Subfinder
+echo "[+] Starting Subfinder"
+subfinder -dL domains.txt -silent -f exclude.txt | anew -q total-subdomains.txt
+
+echo "[+] Done. Check for any out of scope subdomains that were found"
+

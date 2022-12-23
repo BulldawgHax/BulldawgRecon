@@ -1,0 +1,22 @@
+#!/bin/bash
+
+echo "[+] Starting Httprobe"
+cat $PWD/total-subdomains.txt | httprobe -c 50 --prefer-https > $PWD/hosts.txt
+
+LIVEWEBSERVERS=$(cat $PWD/hosts.txt)
+
+echo "[+] Spidering Live Servers"
+for SUBDOMAIN in $LIVEWEBSERVERS
+do
+        #Spider each subdomain
+        gospider -c 5 -d 2 -t 5 --js false -a --blacklist ".(jpg|jpeg|gif|css|tif|tiff|png|ttf|woff|woff2|ico)" --site $SUBDOMAIN >> $PWD/spider_output.txt
+        cat $PWD/spider_output.txt | grep $SUBDOMAIN | sed 's/.*http/http/' | sed 's/\].*//' | anew -q $PWD/crawled_urls.txt
+        cat $PWD/spider_output.txt | grep '^\[form\]' | grep $SUBDOMAIN | anew -q $PWD/crawled_forms.txt
+        cat $PWD/crawled_urls.txt | grep '\?.*\=' | grep -v '.*\.js\?.*\=' | anew -q $PWD/url_params.txt
+done
+
+echo "[+] Output spider results to $PWD/spider_output.txt"
+echo "[+] Parsed URLs output to $PWD/crawled_urls.txt"
+echo "[+] Parsed forms output to $PWD/crawled_forms.txt"
+echo "[+] URLs with parameters output to $PWD/url_params.txt"
+echo ""
